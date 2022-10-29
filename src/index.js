@@ -1,0 +1,35 @@
+const path = require('path');
+const express = require('express');
+const morgan = require('morgan');
+const handlebars = require('express-handlebars');
+const app = express();
+const port = 3000;
+
+const route = require('./routes');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+//url
+app.use(express.urlencoded({
+  extended: true
+})); // search body parser npm > qs npm
+
+// submit html
+app.use(express.json());
+
+// HTTP logger
+app.use(morgan('combined'));
+
+// Template engine
+app.engine('hbs', handlebars.engine({
+  extname: '.hbs'
+}));
+app.set('view engine', 'hbs');
+
+// search express-handlebars nodejs set view folder
+app.set('views', path.join(__dirname) + '\\resources\\views');
+// console.log('PATH', path.join(__dirname) + '\\resources\\views');
+
+route(app);
+
+app.listen(port, () => console.log(`Example app listening on port ${port}`) )
